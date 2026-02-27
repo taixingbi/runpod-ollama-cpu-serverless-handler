@@ -4,13 +4,13 @@ set -e
 # Start ollama server in background
 ollama serve &
 
-# wait a bit for server
+# Wait for ollama to be ready
 sleep 2
 
-# Optional: pre-pull model (will use your volume cache if mounted)
-# If model is already cached in /runpod-volume/models, this is fast.
+# Pre-pull model in background so we don't block worker registration.
+# Worker must register with RunPod immediately or jobs stay queued.
 MODEL="${OLLAMA_MODEL:-phi3}"
-ollama pull "$MODEL" || true
+( ollama pull "$MODEL" || true ) &
 
-# Start RunPod serverless handler (foreground)
+# Start RunPod serverless handler (foreground) — registers worker so it can accept jobs
 python /app/handler.py
