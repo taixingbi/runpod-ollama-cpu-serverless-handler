@@ -1,4 +1,4 @@
-FROM runpod/ollama:0.0.8
+FROM pooyaharatian/runpod-ollama:0.0.8
 
 WORKDIR /app
 
